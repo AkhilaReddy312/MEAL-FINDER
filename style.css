@@ -1,0 +1,96 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: "Poppins", sans-serif;
+}
+
+body {
+    background: #ffffff;
+}
+
+.navbar {
+    height: 60px;
+    background: #e86528;
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 25px;
+    font-size: 20px;
+}
+
+.menu-icon {
+    font-size: 22px;
+    cursor: pointer;
+}
+
+.food {
+    height: 380px;
+    background: url('./assets/foodmunch_kitchen.jpg') center/cover no-repeat;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    color: white;
+    position: relative;
+}
+
+.food::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.4);
+}
+
+.food * {
+    position: relative;
+    z-index: 2;
+}
+
+.search-box {
+    background: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 5px;
+    border-radius: 30px;
+    width: 350px;
+}
+
+.search-box input {
+    width: 100%;
+    padding: 12px 15px;
+    border: none;
+    outline: none;
+    border-radius: 30px;
+}
+
+.search-box button {
+    height: 40px;
+    width: 40px;
+    background: #e86528;
+    border: none;
+    color: white;
+    border-radius: 50%;
+    cursor: pointer;
+}
+
+
+.categories {
+    padding: 30px 20px;
+}
+
+.categories h2 {
+    margin-bottom: 15px;
+    letter-spacing: 2px;
+}
+
+.results {
+    font-size: 18px;
+    margin-top: 10px;
+}
