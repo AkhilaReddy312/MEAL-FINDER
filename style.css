@@ -2,95 +2,121 @@
     margin: 0;
     padding: 0;
     box-sizing: border-box;
-    font-family: "Poppins", sans-serif;
+    font-family: Poppins;
 }
 
 body {
-    background: #ffffff;
+    background: #fafafa;
 }
 
+/* Navbar */
 .navbar {
-    height: 60px;
     background: #e86528;
-    color: white;
+    padding: 15px 20px;
+    color: #fff;
     display: flex;
-    align-items: center;
     justify-content: space-between;
-    padding: 0 25px;
+    align-items: center;
     font-size: 20px;
 }
 
 .menu-icon {
-    font-size: 22px;
+    font-size: 24px;
+    cursor: pointer;
+}
+
+/* Sidebar */
+.sidebar {
+    position: fixed;
+    top: 0;
+    right: -300px;
+    height: 100%;
+    width: 300px;
+    background: #fff;
+    padding: 30px;
+    box-shadow: -3px 0 10px rgba(0, 0, 0, 0.1);
+    transition: 0.3s;
+}
+
+.sidebar.open {
+    right: 0;
+}
+
+.close-icon {
+    font-size: 25px;
+    cursor: pointer;
+    float: right;
+}
+
+.sidebar ul {
+    margin-top: 40px;
+}
+
+.sidebar li {
+    padding: 10px 0;
+    list-style: none;
+    border-bottom: 1px solid #ddd;
     cursor: pointer;
 }
 
 .food {
-    height: 380px;
-    background: url('./assets/foodmunch_kitchen.jpg') center/cover no-repeat;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
+    height: 350px;
+    background: url('./assets/foodmunch_kitchen.jpg') center/cover;
     text-align: center;
     color: white;
-    position: relative;
+    padding-top: 80px;
 }
 
-.food::after {
-    content: "";
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background: rgba(0, 0, 0, 0.4);
-}
-
-.food * {
-    position: relative;
-    z-index: 2;
-}
-
-.search-box {
-    background: white;
+.search-wrapper {
     display: flex;
-    align-items: center;
+    gap: 10px;
     justify-content: center;
-    padding: 5px;
-    border-radius: 30px;
-    width: 350px;
 }
 
-.search-box input {
-    width: 100%;
-    padding: 12px 15px;
+.search-wrapper input {
+    width: 300px;
+    padding: 12px 20px;
+    border-radius: 30px;
     border: none;
     outline: none;
-    border-radius: 30px;
 }
 
-.search-box button {
-    height: 40px;
-    width: 40px;
-    background: #e86528;
-    border: none;
-    color: white;
+.search-btn {
+    height: 45px;
+    width: 45px;
     border-radius: 50%;
+    background: #e86528;
+    color: white;
+    border: none;
     cursor: pointer;
 }
 
-
-.categories {
-    padding: 30px 20px;
+/* Section */
+.section {
+    padding: 30px;
 }
 
-.categories h2 {
-    margin-bottom: 15px;
-    letter-spacing: 2px;
+.section h2 {
+    margin-bottom: 20px;
 }
 
-.results {
-    font-size: 18px;
-    margin-top: 10px;
+/* Grid */
+.grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+    gap: 20px;
+}
+
+.card {
+    background: white;
+    padding: 10px;
+    border-radius: 10px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    text-align: center;
+    cursor: pointer;
+}
+
+.card img {
+    width: 100%;
+    border-radius: 10px;
 }

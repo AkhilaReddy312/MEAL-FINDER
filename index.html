@@ -4,22 +4,31 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MEAL FINDER</title>
+    <title>Meal Finder</title>
+    <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
-    <link rel="stylesheet" href="./style.css">
 </head>
 
 <body>
+
     <!-- HEADER -->
     <header class="navbar">
-        <div class="logo"><i class="fa-solid fa-house"></i> MealFinder.</div>
-        <i class="fa-solid fa-bars menu-icon"></i>
+        <div class="logo"><i class="fa-solid fa-house"></i> MEAL FINDER</div>
+        <i id="toggleBtn" class="fa-solid fa-bars menu-icon"></i>
     </header>
 
+    <!--SIDEBAR -->
+    <aside id="sidebar" class="sidebar">
+        <i id="closeBtn" class="fa-solid fa-circle-xmark close-icon"></i>
+        <ul id="sideList"></ul>
+    </aside>
+
     <section class="food">
-        <div class="search-box">
+        <div class="search-wrapper">
             <input id="searchInput" type="text" placeholder="Search recipes here ...">
-            <button id="searchBtn"><i class="fa-solid fa-magnifying-glass"></i></button>
+            <button id="searchBtn" class="search-btn">
+                <i class="fa-solid fa-magnifying-glass"></i>
+            </button>
         </div>
         <br>
         <h1>What are your favorite cuisines?</h1>
@@ -28,14 +37,12 @@
     </section>
 
     <!-- CATEGORIES -->
-    <section class="categories">
+    <section class="section">
         <h2>CATEGORIES</h2>
-        <div id="results" class="results"></div>
+        <div id="categoryList" class="grid"></div>
     </section>
 
-
-    <script type="module" src="./app.js"></script>
-
+    <script src="app.js"></script>
 </body>
 
 </html>
