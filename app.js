@@ -65,3 +65,95 @@ const loadCategories = async () => {
 };
 
 loadCategories();
+
+// 4. OPEN CATEGORY PAGE
+const openCategory = (name) => {
+    window.location.href = `category.html?c=${name}`;
+};
+
+// 5. LOAD MEALS BY CATEGORY
+const loadMealsByCategory = async () => {
+    const title = document.getElementById("catTitle");
+    const list = document.getElementById("mealList");
+
+    if (!title || !list) return;
+
+    const params = new URLSearchParams(window.location.search);
+    const categoryName = params.get("c");
+
+    title.innerText = categoryName;
+
+    const res = await fetch(FILTER_API + categoryName);
+    const data = await res.json();
+    const meals = data.meals;
+
+    meals.forEach(meal => {
+        list.innerHTML += `
+            <div class="card" onclick="openMeal('${meal.idMeal}')">
+                <img src="${meal.strMealThumb}">
+                <p>${meal.strMeal}</p>
+            </div>
+        `;
+    });
+};
+
+loadMealsByCategory();
+
+// 6. OPEN MEAL DETAILS PAGE
+
+const openMeal = (id) => {
+    window.location.href = `meal.html?id=${id}`;
+};
+
+// 7. LOAD MEAL DETAILS
+
+const loadMealDetails = async () => {
+    const box = document.getElementById("mealDetails");
+    if (!box) return;
+
+    const params = new URLSearchParams(window.location.search);
+    const id = params.get("id");
+
+    const res = await fetch(DETAILS_API + id);
+    const data = await res.json();
+    const meal = data.meals[0];
+
+    box.innerHTML = `
+        <h2>${meal.strMeal}</h2>
+        <img src="${meal.strMealThumb}" style="width:300px;border-radius:10px">
+        <p><b>Category:</b> ${meal.strCategory}</p>
+        <p style="margin-top:15px;"><b>Instructions:</b><br>${meal.strInstructions}</p>
+    `;
+};
+
+loadMealDetails();
+
+// 8. SEARCH FUNCTION
+
+const searchBtn = document.getElementById("searchBtn");
+
+if (searchBtn) {
+    searchBtn.addEventListener("click", async () => {
+        const text = document.getElementById("searchInput").value.trim();
+        const box = document.getElementById("categoryList");
+
+        const res = await fetch(SEARCH_API + text);
+        const data = await res.json();
+
+        box.innerHTML = "";
+
+        if (!data.meals) {
+            box.innerHTML = "<p>No meals found.</p>";
+            return;
+        }
+
+        data.meals.forEach(meal => {
+            box.innerHTML += `
+                <div class="card" onclick="openMeal('${meal.idMeal}')">
+                    <img src="${meal.strMealThumb}">
+                    <p>${meal.strMeal}</p>
+                </div>
+            `;
+        });
+    });
+}
