@@ -1,31 +1,23 @@
-//  1. TOGGLE MENU
-const searchBtn = document.getElementById("searchBtn");
+// 1. TOGGLE MENU
 
-if (searchBtn) {
-    searchBtn.addEventListener("click", async () => {
-        const text = document.getElementById("searchInput").value.trim();
-        const box = document.getElementById("categoryList");
 
-        const res = await fetch(SEARCH_API + text);
-        const data = await res.json();
+const toggleBtn = document.getElementById("toggleBtn");
+const closeBtn = document.getElementById("closeBtn");
+const sidebar = document.getElementById("sidebar");
 
-        box.innerHTML = "";
-
-        if (!data.meals) {
-            box.innerHTML = "<p>No meals found.</p>";
-            return;
-        }
-
-        data.meals.forEach(meal => {
-            box.innerHTML += `
-                <div class="card" onclick="openMeal('${meal.idMeal}')">
-                    <img src="${meal.strMealThumb}">
-                    <p>${meal.strMeal}</p>
-                </div>
-            `;
-        });
+if (toggleBtn) {
+    toggleBtn.addEventListener("click", () => {
+        sidebar.style.right = "0px";
     });
 }
+
+if (closeBtn) {
+    closeBtn.addEventListener("click", () => {
+        sidebar.style.right = "-300px";
+    });
+}
+
+
 
 // 2. API LINKS
 
@@ -33,6 +25,8 @@ const CATEGORIES_API = "https://www.themealdb.com/api/json/v1/1/categories.php";
 const SEARCH_API = "https://www.themealdb.com/api/json/v1/1/search.php?s=";
 const FILTER_API = "https://www.themealdb.com/api/json/v1/1/filter.php?c=";
 const DETAILS_API = "https://www.themealdb.com/api/json/v1/1/lookup.php?i=";
+
+
 
 // 3. LOAD CATEGORIES ON HOMEPAGE
 
@@ -66,12 +60,18 @@ const loadCategories = async () => {
 
 loadCategories();
 
+
+
 // 4. OPEN CATEGORY PAGE
+
 const openCategory = (name) => {
     window.location.href = `category.html?c=${name}`;
 };
 
-// 5. LOAD MEALS BY CATEGORY
+
+
+// 5. LOAD MEALS BY CATEGORY 
+
 const loadMealsByCategory = async () => {
     const title = document.getElementById("catTitle");
     const list = document.getElementById("mealList");
@@ -99,13 +99,17 @@ const loadMealsByCategory = async () => {
 
 loadMealsByCategory();
 
+
+
 // 6. OPEN MEAL DETAILS PAGE
 
 const openMeal = (id) => {
     window.location.href = `meal.html?id=${id}`;
 };
 
-// 7. LOAD MEAL DETAILS
+
+
+// 7. LOAD MEAL DETAILS 
 
 const loadMealDetails = async () => {
     const box = document.getElementById("mealDetails");
@@ -128,7 +132,8 @@ const loadMealDetails = async () => {
 
 loadMealDetails();
 
-// 8. SEARCH FUNCTION
+
+// 8. SEARCH FUNCTION (Homepage)
 
 const searchBtn = document.getElementById("searchBtn");
 

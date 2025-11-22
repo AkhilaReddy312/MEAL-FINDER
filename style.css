@@ -59,7 +59,8 @@ body {
     cursor: pointer;
 }
 
-.food {
+/* Hero */
+.hero {
     height: 350px;
     background: url('./assets/foodmunch_kitchen.jpg') center/cover;
     text-align: center;
