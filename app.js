@@ -82,6 +82,24 @@ const SEARCH_API = "https://www.themealdb.com/api/json/v1/1/search.php?s=";
 const FILTER_API = "https://www.themealdb.com/api/json/v1/1/filter.php?c=";
 const DETAILS_API = "https://www.themealdb.com/api/json/v1/1/lookup.php?i=";
 
+const categoriesCache = {
+    list: null
+};
+
+const fetchCategoriesOnce = async () => {
+    if (categoriesCache.list) return categoriesCache.list;
+    try {
+        const res = await fetch(CATEGORIES_API);
+        const data = await res.json();
+        categoriesCache.list = data?.categories || [];
+        return categoriesCache.list;
+    } catch (err) {
+        console.error("Failed to fetch categories:", err);
+        categoriesCache.list = [];
+        return categoriesCache.list;
+    }
+};
+
 
 // 2. HELPERS: meals rendering
 
@@ -91,6 +109,17 @@ const categoryBox = document.getElementById("categoryList");
 
 function renderMeals(meals) {
     if (!mealsContainer) return;
+
+    // Unhide meals section if hidden (keeps previous behavior)
+    const mealsSection = document.getElementById('mealsSection');
+    if (mealsSection) mealsSection.style.display = '';
+    else {
+        const mh = document.getElementById('mealsHeading');
+        const ml = document.getElementById('mealsList');
+        if (mh) mh.classList.remove('hidden');
+        if (ml) ml.classList.remove('hidden');
+    }
+
     mealsContainer.innerHTML = "";
 
     if (!meals || meals.length === 0) {
@@ -99,11 +128,22 @@ function renderMeals(meals) {
     }
 
     meals.forEach(meal => {
+        // only show origin when the API actually provides it
+        const originRaw = meal.strArea;
+        const origin = originRaw && originRaw.trim() !== "" ? originRaw.trim() : null;
+
+        // build origin HTML only if origin exists
+        const originHtml = origin ? `<div class="origin">${origin}</div>` : "";
+
         mealsContainer.innerHTML += `
-            <div class="card" onclick="window.location.href='meal.html?id=${meal.idMeal}'">
-                <img src="${meal.strMealThumb}" alt="${meal.strMeal}">
+            <div class="card" onclick="window.location.href='meal.html?id=${encodeURIComponent(meal.idMeal)}'">
+                <img src="${meal.strMealThumb}" alt="${(meal.strMeal || '')}">
                 <p class="cat-badge">${meal.strCategory || ''}</p>
-                <div class="title">${meal.strMeal}</div>
+
+                <div class="card-info">
+                    ${originHtml}
+                    <div class="title">${meal.strMeal || ''}</div>
+                </div>
             </div>
         `;
     });
@@ -154,24 +194,56 @@ loadCategories();
 
 // 4. OPEN CATEGORY PAGE
 
-const openCategory = (name) => {
+const openCategory = async (name) => {
     const pathname = window.location.pathname;
     const onIndex = pathname.endsWith('/') || pathname.endsWith('/index.html') || pathname.endsWith('index.html');
 
     if (onIndex && mealsContainer && mealsHeading) {
-        fetch(FILTER_API + encodeURIComponent(name))
-            .then(res => res.json())
-            .then(data => renderMeals(data.meals))
-            .catch(err => {
-                console.error("Failed to load category meals:", err);
-                if (mealsContainer) mealsContainer.innerHTML = "<p>Could not load meals. Try again later.</p>";
-            });
+        // 1) get category descriptions (cached)
+        const categories = await fetchCategoriesOnce();
+        const found = categories.find(c => c.strCategory.toLowerCase() === String(name).toLowerCase());
+
+        // 2) create/update description box above meals section
+        let descBox = document.getElementById('categoryDescription');
+        if (!descBox) {
+            descBox = document.createElement('div');
+            descBox.id = 'categoryDescription';
+            descBox.className = 'category-description';
+            const mealsSection = document.getElementById('mealsSection') || document.querySelector('section#mealsSection') || document.querySelector('section .section');
+            if (mealsSection && mealsSection.parentNode) {
+                mealsSection.parentNode.insertBefore(descBox, mealsSection);
+            } else {
+                document.body.insertBefore(descBox, document.body.firstChild);
+            }
+        }
+
+        descBox.innerHTML = `
+      <h3 class="cat-desc-title">${found ? found.strCategory : name}</h3>
+      <p class="cat-desc-text">${found ? (found.strCategoryDescription || "No description available.") : "No description available."}</p>
+    `;
+
+        // ensure meals area is visible
+        const mealsSection = document.getElementById('mealsSection');
+        if (mealsSection) mealsSection.style.display = '';
+
+        // 3) fetch and render meals for the category
+        try {
+            const res = await fetch(FILTER_API + encodeURIComponent(name));
+            const data = await res.json();
+            renderMeals(data?.meals || []);
+        } catch (err) {
+            console.error("Failed to load category meals:", err);
+            if (mealsContainer) mealsContainer.innerHTML = "<p>Could not load meals. Try again later.</p>";
+        }
+
+        // scroll to the description so user sees it
+        descBox.scrollIntoView({ behavior: 'smooth', block: 'start' });
         return;
     }
 
+    // fallback for non-index pages
     window.location.href = `category.html?c=${encodeURIComponent(name)}`;
 };
-
 
 
 // 5. LOAD MEALS BY CATEGORY 
@@ -183,8 +255,28 @@ const loadMealsByCategory = async () => {
 
     const params = new URLSearchParams(window.location.search);
     const categoryName = params.get("c") || "";
+
     title.innerText = categoryName;
 
+    // fetch categories once to get the description
+    const categories = await fetchCategoriesOnce();
+    const found = categories.find(c => c.strCategory.toLowerCase() === String(categoryName).toLowerCase());
+
+    // create or update description element just below title
+    let descBox = document.getElementById('categoryDescription');
+    if (!descBox) {
+        descBox = document.createElement('div');
+        descBox.id = 'categoryDescription';
+        descBox.className = 'category-description';
+        title.parentNode.insertBefore(descBox, title.nextSibling);
+    }
+
+    descBox.innerHTML = `
+    <h3 class="cat-desc-title">${found ? found.strCategory : categoryName}</h3>
+    <p class="cat-desc-text">${found ? (found.strCategoryDescription || "No description available.") : "No description available."}</p>
+  `;
+
+    // now fetch meals for the category and render them in the grid
     try {
         const res = await fetch(FILTER_API + encodeURIComponent(categoryName));
         const data = await res.json();
@@ -192,16 +284,20 @@ const loadMealsByCategory = async () => {
         list.innerHTML = "";
         meals.forEach(meal => {
             list.innerHTML += `
-                <div class="card" onclick="openMeal('${meal.idMeal}')">
-                    <img src="${meal.strMealThumb}" alt="${meal.strMeal}">
-                    <div class="title">${meal.strMeal}</div>
-                </div>
-            `;
+        <div class="card" onclick="openMeal('${meal.idMeal}')">
+          <img src="${meal.strMealThumb}" alt="${meal.strMeal}">
+          <div class="card-info">
+            <div class="origin">${meal.strArea || ''}</div>
+            <div class="title">${meal.strMeal}</div>
+          </div>
+        </div>
+      `;
         });
     } catch (err) {
         console.error("Failed to load meals by category:", err);
+        list.innerHTML = "<p>Could not load meals. Try again later.</p>";
     }
-}
+};
 
 if (window.location.pathname.endsWith('category.html')) {
     loadMealsByCategory();
