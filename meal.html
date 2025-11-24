@@ -5,6 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Meal Details</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
     <link rel="stylesheet" href="./style.css">
 </head>
 
@@ -22,9 +23,51 @@
         <ul id="sideList"></ul>
     </aside>
 
-    <section class="section">
-        <div id="mealDetails"></div>
+
+    <!-- hero with search (same as index) -->
+    <section class="hero">
+        <div class="search-wrapper">
+            <input id="searchInput" type="text" placeholder="Search recipes here ...">
+            <button id="searchBtn" class="search-btn">
+                <i class="fa-solid fa-magnifying-glass"></i>
+            </button>
+        </div>
+        <br>
+        <h1>What are your favorite cuisines?</h1>
+        <br><br>
+        <p>PERSONALIZE YOUR EXPERIENCE</p>
     </section>
+
+    <!-- page heading -->
+    <section class="section">
+        <h2 class="section-title">MEAL DETAILS</h2>
+    </section>
+    <!-- sidebar (same markup used across pages) -->
+    <aside id="sidebar" class="sidebar">
+        <i id="closeBtn" class="close-icon">✕</i>
+        <ul id="sideList"></ul>
+    </aside>
+
+    <!-- content area -->
+    <main class="container page-content">
+        <!-- breadcrumb orange bar (app.js will set content) -->
+        <div id="breadcrumb" class="breadcrumb" aria-hidden="false"></div>
+
+
+
+        <!-- meal details container — script will render here -->
+        <section id="mealArea" class="meal-area">
+            <div id="mealDetails"></div>
+        </section>
+
+        <!-- categories grid (same as index footer) -->
+        <section class="section categories-section">
+            <h2 class="section-title">CATEGORIES</h2>
+            <div id="categoryList" class="grid"></div>
+        </section>
+    </main>
+
+
 
     <script src="./app.js"></script>
 </body>

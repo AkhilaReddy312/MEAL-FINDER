@@ -317,32 +317,100 @@ const openMeal = (id) => {
 // 7. LOAD MEAL DETAILS 
 
 const loadMealDetails = async () => {
-    const box = document.getElementById("mealDetails");
-    if (!box) return;
+    // run only when on meal.html
+    if (!window.location.pathname.endsWith('meal.html') && !window.location.pathname.endsWith('/meal.html')) return;
 
     const params = new URLSearchParams(window.location.search);
     const id = params.get("id");
-    if (!id) { box.innerHTML = "<p>No meal id provided.</p>"; return; }
+
+    const breadcrumb = document.getElementById("breadcrumb");
+    const detailsBox = document.getElementById("mealDetails");
+
+    if (!id) {
+        if (detailsBox) detailsBox.innerHTML = "<p>No meal id provided.</p>";
+        return;
+    }
 
     try {
         const res = await fetch(DETAILS_API + encodeURIComponent(id));
         const data = await res.json();
         const meal = data?.meals?.[0];
-        if (!meal) { box.innerHTML = "<p>Meal not found.</p>"; return; }
 
-        box.innerHTML = `
-            <h2>${meal.strMeal}</h2>
-            <img src="${meal.strMealThumb}" style="width:300px;border-radius:10px">
-            <p><b>Category:</b> ${meal.strCategory}</p>
-            <p style="margin-top:15px;"><b>Instructions:</b><br>${meal.strInstructions}</p>
-        `;
+        if (!meal) {
+            if (detailsBox) detailsBox.innerHTML = "<p>Meal not found.</p>";
+            return;
+        }
+
+        // breadcrumb
+        if (breadcrumb) {
+            breadcrumb.innerHTML = `<div class="breadcrumb-inner"><span class="home-pill">🏠</span>&nbsp;&nbsp; ${meal.strMeal} ${meal.strArea ? '(' + meal.strArea + ')' : ''}</div>`;
+        }
+
+        // ingredients + measures
+        const ingredients = [];
+        for (let i = 1; i <= 20; i++) {
+            const ing = meal[`strIngredient${i}`];
+            const measure = meal[`strMeasure${i}`];
+            if (ing && ing.trim()) {
+                ingredients.push({ ingredient: ing.trim(), measure: (measure || '').trim() });
+            }
+        }
+
+        const tags = meal.strTags ? meal.strTags.split(',').map(t => t.trim()).filter(Boolean) : [];
+        const metaSource = meal.strSource || meal.strYoutube || '';
+
+        // build HTML
+        detailsBox.innerHTML = `
+      <div class="meal-grid">
+        <div class="meal-left">
+          <div class="meal-image-wrap"><img src="${meal.strMealThumb || ''}" alt="${(meal.strMeal || 'Meal')}"></div>
+
+          <div class="measure-box" aria-label="Measures">
+            ${ingredients.map(i => `
+              <div class="measure-row">
+                <div class="measure-left">${i.measure || ''}</div>
+                <div class="measure-right">${i.ingredient}</div>
+              </div>
+            `).join('')}
+          </div>
+        </div>
+
+        <aside class="meal-right">
+          <div class="meta-box">
+            <p><strong>Category:</strong> ${meal.strCategory || ''}</p>
+            <p><strong>Area:</strong> ${meal.strArea || ''}</p>
+            <p><strong>Source:</strong> ${metaSource ? `<a href="${metaSource}" target="_blank" rel="noopener noreferrer">${metaSource.replace(/^https?:\/\//, '')}</a>` : ''}</p>
+            <p><strong>Tags:</strong> ${tags.length ? tags.map(t => `<span class="pill">${t}</span>`).join(' ') : 'none'}</p>
+          </div>
+
+          <div class="ingredients-box" aria-label="Ingredients">
+            <h4>Ingredients</h4>
+            <ul class="ingredients-list">
+              ${ingredients.map(i => `<li>${i.ingredient}</li>`).join('')}
+            </ul>
+          </div>
+        </aside>
+      </div>
+
+      <section class="instructions-section">
+        <h3>Instructions</h3>
+        <div class="instructions">
+          ${(meal.strInstructions || '').split(/\r?\n\r?\n/).map(p => `<p>${p.replace(/\r?\n/g, ' ')}</p>`).join('')}
+        </div>
+      </section>
+    `;
+
+        // scroll to breadcrumb so hero remains visible above
+        if (breadcrumb) breadcrumb.scrollIntoView({ behavior: 'smooth', block: 'start' });
+
     } catch (err) {
         console.error("Failed to load meal details:", err);
+        if (detailsBox) detailsBox.innerHTML = "<p>Failed to load meal details.</p>";
     }
 };
-if (window.location.pathname.endsWith('meal.html')) {
-    loadMealDetails();
-}
+
+// call it (no-op on other pages)
+loadMealDetails();
 
 
 // 8. SEARCH FUNCTION 
