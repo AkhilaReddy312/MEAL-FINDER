@@ -194,7 +194,7 @@ const loadMealsByCategory = async () => {
             list.innerHTML += `
                 <div class="card" onclick="openMeal('${meal.idMeal}')">
                     <img src="${meal.strMealThumb}" alt="${meal.strMeal}">
-                    <p class="title">${meal.strMeal}</p>
+                    <div class="title">${meal.strMeal}</div>
                 </div>
             `;
         });
