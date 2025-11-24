@@ -513,7 +513,7 @@ body {
 }
 
 /* hide meals area by default on main page */
-/* #mealsSection {
+#mealsSection {
     display: none;
 }
 
@@ -521,4 +521,4 @@ body {
 #mealsHeading.hidden,
 #mealsList.hidden {
     display: none;
-} */
+}
