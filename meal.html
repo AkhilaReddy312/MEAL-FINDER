@@ -11,8 +11,16 @@
 <body>
 
     <header class="navbar">
-        <div class="logo"><i class="fa-solid fa-house"></i> MEAL FINDER</div>
+        <div class="logo" onclick="goHome()" style="cursor:pointer;">
+            <i class="fa-solid fa-house"></i> MEAL FINDER
+        </div>
+        <i id="toggleBtn" class="fa-solid fa-bars menu-icon"></i>
     </header>
+
+    <aside id="sidebar" class="sidebar">
+        <i id="closeBtn" class="fa-solid fa-circle-xmark close-icon"></i>
+        <ul id="sideList"></ul>
+    </aside>
 
     <section class="section">
         <div id="mealDetails"></div>

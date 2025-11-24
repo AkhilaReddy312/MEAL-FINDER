@@ -25,7 +25,7 @@ body {
     cursor: pointer;
 }
 
-/* Sidebar */
+
 .sidebar {
     position: fixed;
     top: 0;
@@ -59,7 +59,7 @@ body {
     cursor: pointer;
 }
 
-/* Hero */
+
 .hero {
     height: 350px;
     background: url('./assets/foodmunch_kitchen.jpg') center/cover;
@@ -92,7 +92,7 @@ body {
     cursor: pointer;
 }
 
-/* Section */
+
 .section {
     padding: 30px;
 }
@@ -101,7 +101,7 @@ body {
     margin-bottom: 20px;
 }
 
-/* Grid */
+
 .grid {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
@@ -109,15 +109,147 @@ body {
 }
 
 .card {
+    position: relative;
+    overflow: hidden;
     background: white;
     padding: 10px;
     border-radius: 10px;
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
     text-align: center;
     cursor: pointer;
+    transition: transform 220ms ease, box-shadow 220ms ease;
 }
+
 
 .card img {
     width: 100%;
-    border-radius: 10px;
+    height: 160px;
+    object-fit: cover;
+    border-radius: 8px;
+    display: block;
+    transition: transform 300ms ease, filter 300ms ease;
+    transform-origin: center center;
+}
+
+
+.card p {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    margin: 0;
+    background: #e86528;
+
+    color: #fff;
+    padding: 6px 10px;
+    border-radius: 6px;
+    font-size: 12px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.6px;
+    box-shadow: 0 4px 10px rgba(232, 101, 40, 0.18);
+    z-index: 3;
+
+}
+
+
+.card:hover img {
+    transform: scale(1.06);
+    filter: brightness(0.98);
+}
+
+.card:hover {
+    transform: translateY(-6px);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.12);
+}
+
+
+@media (max-width: 520px) {
+    .card img {
+        height: 140px;
+    }
+
+    .card p {
+        top: 8px;
+        right: 8px;
+        padding: 5px 8px;
+        font-size: 11px;
+    }
+}
+
+#mealsList .cat-badge {
+    display: none !important;
+}
+
+#mealsList .card:hover,
+#mealsList .card:focus-within {
+    transform: none !important;
+    box-shadow: none !important;
+}
+
+#mealsList .card:hover img,
+#mealsList .card:focus-within img {
+    transform: none !important;
+    filter: none !important;
+}
+
+.section h2 {
+    position: relative;
+    display: inline-block;
+    padding-bottom: 5px;
+}
+
+.section h2::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    width: 65px;
+    height: 3px;
+    background: #e86528;
+    border-radius: 3px;
+}
+
+.no-results {
+    grid-column: 1 / -1;
+    text-align: center;
+    font-size: 14px;
+    font-weight: 600;
+    color: black;
+}
+
+
+#sidebarOverlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.3);
+    opacity: 0;
+    visibility: hidden;
+    transition: 0.25s ease;
+    z-index: 9998;
+}
+
+#sidebarOverlay.visible {
+    opacity: 1;
+    visibility: visible;
+}
+
+
+.sidebar {
+    right: -320px;
+    transition: 0.3s ease;
+    z-index: 9999;
+}
+
+.sidebar.open {
+    right: 0;
+}
+
+
+.close-icon {
+    color: #e86528 !important;
+    transition: color 0.25s;
+}
+
+.close-icon.black {
+    color: #000 !important;
 }
